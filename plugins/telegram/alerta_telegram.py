@@ -7,6 +7,7 @@ except ImportError:
     from alerta.app import app  # alerta < 5.0
 from alerta.plugins import PluginBase
 
+import urllib3
 import telepot
 import telepot.api
 from jinja2 import Template, UndefinedError
