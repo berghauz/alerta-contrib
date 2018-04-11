@@ -8,6 +8,7 @@ except ImportError:
 from alerta.plugins import PluginBase
 
 import telepot
+import telepot.api
 from jinja2 import Template, UndefinedError
 
 DEFAULT_TMPL = """
@@ -39,6 +40,8 @@ DASHBOARD_URL = app.config.get('DASHBOARD_URL', '') \
 class TelegramBot(PluginBase):
     def __init__(self, name=None):
 
+        telepot.api._pools = {'default': urllib3.ProxyManager(proxy_url=os.environ['https_proxy'], num_pools=3, maxsize=10, retries=False, timeout=30),}
+        telepot.api._onetime_pool_spec = (urllib3.ProxyManager, dict(proxy_url=os.environ['https_proxy'], num_pools=1, maxsize=1, retries=False, timeout=30))
         self.bot = telepot.Bot(TELEGRAM_TOKEN)
         LOG.debug('Telegram: %s', self.bot.getMe())
 
