@@ -27,6 +27,8 @@ LOG = logging.getLogger('alerta.plugins.telegram')
 
 TELEGRAM_TOKEN = app.config.get('TELEGRAM_TOKEN') \
                  or os.environ.get('TELEGRAM_TOKEN')
+TELEGRAM_PROXY = app.config.get('TELEGRAM_PROXY') \
+                 or os.environ.get('TELEGRAM_PROXY')
 TELEGRAM_CHAT_ID = app.config.get('TELEGRAM_CHAT_ID') \
                    or os.environ.get('TELEGRAM_CHAT_ID')
 TELEGRAM_WEBHOOK_URL = app.config.get('TELEGRAM_WEBHOOK_URL', None) \
@@ -41,8 +43,8 @@ DASHBOARD_URL = app.config.get('DASHBOARD_URL', '') \
 class TelegramBot(PluginBase):
     def __init__(self, name=None):
 
-        telepot.api._pools = {'default': urllib3.ProxyManager(proxy_url=os.environ['https_proxy'], num_pools=3, maxsize=10, retries=False, timeout=30),}
-        telepot.api._onetime_pool_spec = (urllib3.ProxyManager, dict(proxy_url=os.environ['https_proxy'], num_pools=1, maxsize=1, retries=False, timeout=30))
+        telepot.api._pools = {'default': urllib3.ProxyManager(proxy_url=TELEGRAM_PROXY, num_pools=3, maxsize=10, retries=False, timeout=30),}
+        telepot.api._onetime_pool_spec = (urllib3.ProxyManager, dict(proxy_url=TELEGRAM_PROXY, num_pools=1, maxsize=1, retries=False, timeout=30))
         self.bot = telepot.Bot(TELEGRAM_TOKEN)
         LOG.debug('Telegram: %s', self.bot.getMe())
 
